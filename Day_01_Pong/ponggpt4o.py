@@ -87,11 +87,18 @@ def start_countdown(direction):
     countdown_start = pygame.time.get_ticks()
     countdown_active = True
     countdown_direction = direction
-    countdown_sound.play()  # Play the countdown sound once when the countdown starts
+    countdown_sound.play()
 
     # Set initial ball speed for the countdown
-    ball_speed_x = -base_ball_speed * speed_multiplier if direction == "player" else base_ball_speed * speed_multiplier
-    ball_speed_y = base_ball_speed * speed_multiplier * random.choice((1, -1))
+    ball_speed_x = base_ball_speed * speed_multiplier * (-1 if direction == "player" else 1)
+    
+    # Determine the vertical direction based on the ball's position relative to the center
+    if ball.centery < HEIGHT // 2:
+        ball_speed_y = base_ball_speed * speed_multiplier
+    elif ball.centery > HEIGHT // 2:
+        ball_speed_y = -base_ball_speed * speed_multiplier
+    else:
+        ball_speed_y = base_ball_speed * speed_multiplier * random.choice((1, -1))
 
     calculate_trajectory()  # Calculate trajectory points
 
@@ -108,24 +115,19 @@ def calculate_trajectory():
         if temp_ball_y <= 0 or temp_ball_y >= HEIGHT:
             temp_speed_y *= -1
         trajectory_points.append((temp_ball_x, temp_ball_y))
-    print("Trajectory points calculated:", trajectory_points)  # Debug statement
 
-def draw_trajectory(surface):
-    for point in trajectory_points:
-        if 0 <= point[0] < WIDTH and 0 <= point[1] < HEIGHT:
-            pygame.draw.circle(surface, NEON_GREEN, point, 3)
-
-def draw_countdown(surface):
-    global countdown_active
-    elapsed_time = pygame.time.get_ticks() - countdown_start
-    countdown = (countdown_time - elapsed_time) // 500 + 1  # Adjust the division for countdown speed
-    if countdown > 0:
-        countdown_text = font.render(str(countdown), True, WHITE)
-        surface.blit(countdown_text, (WIDTH // 2 - countdown_text.get_width() // 2, HEIGHT // 2 - countdown_text.get_height() // 2))
-        draw_trajectory(surface)  # Draw the trajectory during countdown
+def ball_restart(direction):
+    global ball_speed_x, ball_speed_y
+    ball.center = (WIDTH // 2, HEIGHT // 2)
+    ball_speed_x = base_ball_speed * speed_multiplier * (-1 if direction == "player" else 1)
+    
+    # Determine the vertical direction based on the ball's position relative to the center
+    if ball.centery < HEIGHT // 2:
+        ball_speed_y = base_ball_speed * speed_multiplier
+    elif ball.centery > HEIGHT // 2:
+        ball_speed_y = -base_ball_speed * speed_multiplier
     else:
-        countdown_active = False
-        ball_restart(countdown_direction)
+        ball_speed_y = base_ball_speed * speed_multiplier * random.choice((1, -1))
 
 class Particle:
     def __init__(self, x, y, color):
