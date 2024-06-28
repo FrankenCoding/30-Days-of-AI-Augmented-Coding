@@ -33,3 +33,4 @@ I'm collaborating with an AI assistant for this challenge. Currently (ChatGPT4o 
 
 (This section will be updated throughout the challenge with insights and lessons learned from the challenge)
 Day 1: Made a pong game and ran into a few problems namely I was trying to create a telegraphed launch of the ball after each score so the ball didn't suddenly launch from mid screen with no time to react. The implementation only seems to work 50% of the time since the ball only launches towards the top or the bottom of the screen and it didn't seem to be predicting correctly. I couldn't get the AI to fix the logic and I couldn't figure it our either.
+Day 2: Attempted making a small matching game that matched a screenshot but had little success. 
